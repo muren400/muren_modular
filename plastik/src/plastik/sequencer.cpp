@@ -13,10 +13,23 @@
  *GNU General Public License for more details.
  *********************************************************************
 */
+#include <MCP4728.h>
+#include <Wire.h>
 
 #include "sequencer.h"
 
-Sequencer::Sequencer() {
+Sequencer::Sequencer() {}
+
+void Sequencer::initDAC(){
+    Wire.begin();
+    dac.attatch(Wire, 22);
+    dac.readRegisters();
+    dac.selectVref(MCP4728::VREF::INTERNAL_2_8V, MCP4728::VREF::INTERNAL_2_8V, MCP4728::VREF::INTERNAL_2_8V, MCP4728::VREF::INTERNAL_2_8V);
+    dac.selectPowerDown(MCP4728::PWR_DOWN::GND_100KOHM, MCP4728::PWR_DOWN::GND_100KOHM, MCP4728::PWR_DOWN::GND_100KOHM, MCP4728::PWR_DOWN::GND_100KOHM);
+    dac.selectGain(MCP4728::GAIN::X1, MCP4728::GAIN::X1, MCP4728::GAIN::X1, MCP4728::GAIN::X1);
+
+    dac.analogWrite(MCP4728::DAC_CH::A, 1000);
+    dac.enable(true);
 }
 
 /**
@@ -116,8 +129,9 @@ void Sequencer::executeStepArp() {
 
     int pitch = subSteps[subStepPos % subStepLength];
 
-    pitch *= 8;
-    // analogWrite(CV, pitch);
+    pitch *= 300;
+
+    dac.analogWrite(pitch, pitch, pitch, pitch);
 
     digitalWrite(GATE_1, HIGH);
     digitalWrite(GATE_2, HIGH);
@@ -144,14 +158,18 @@ void Sequencer::executeStepPoly() {
     int iOutput = 0;
     for (int i = 0; i < MAXNOTES; i++) {
         if (patterns[pattern].notes[stepPos] & 1 << i) {
-            digitalWrite(gates[iOutput++], HIGH);
+            digitalWrite(gates[iOutput], HIGH);
 
             int pitch = i;
+            cvs[iOutput] = i * 300;
 
+            iOutput++;
             if (iOutput >= MAXOUTPUTS)
                 break;
         }
     }
+
+    dac.analogWrite(cvs[0], cvs[1], cvs[2], cvs[3]);
 
     delay(1);
 

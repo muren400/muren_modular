@@ -13,13 +13,14 @@
  *GNU General Public License for more details.
  *********************************************************************
 */
-
 #include "plastik.h"
 #include "sequencer.h"
 
 Sequencer sequencer;
 
 void setup(void) {
+    sequencer.initDAC();
+
     sequencer.loadPatterns();
     
     sequencer.gui = new Gui(&sequencer);

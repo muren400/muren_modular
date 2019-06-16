@@ -18,6 +18,8 @@
 #define SEQUENCER_H
 
 #include <stdint.h>
+#include <MCP4728.h>
+#include <Wire.h>
 
 #include "gui.h"
 #include "pattern.h"
@@ -32,8 +34,11 @@ class Sequencer {
    public:
     Gui* gui;
 
-    uint8_t mode = MODE_DRUM;
+    MCP4728 dac;
 
+    uint8_t mode = MODE_POLY;
+
+    int cvs[4] = {0,0,0,0};
     uint8_t gates[MAXOUTPUTS] = {GATE_1, GATE_2, GATE_3, GATE_4};
 
     // init Encoders
@@ -68,6 +73,8 @@ class Sequencer {
     int getStep();
 
     int isReset();
+
+    void initDAC();
 
     void loadPatterns();
 

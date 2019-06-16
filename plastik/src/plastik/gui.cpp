@@ -83,7 +83,7 @@ void Gui::printNotes() {
     cursorW = tft.width();
     noteH = cursorH;
 
-    if (sequencer->mode = MODE_DRUM) {
+    if (sequencer->mode == MODE_DRUM) {
         noteW = (cursorW / MAXOUTPUTS) + 1;
     } else {
         noteW = (cursorW / MAXNOTES) + 1;
