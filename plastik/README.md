@@ -10,3 +10,6 @@ For the user interface an arduino uno compatible touchscreen shield is used. thi
 https://ebay.us/JfRxey
 
 Make sure to install this library https://github.com/prenticedavid/MCUFRIEND_kbv in order to make the touch screen work.
+
+Also this one is needed for the DAC:
+https://github.com/hideakitai/MCP4728
